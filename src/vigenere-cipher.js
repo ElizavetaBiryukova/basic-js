@@ -1,4 +1,6 @@
-const { NotImplementedError } = require('../extensions/index.js');
+const {
+  NotImplementedError
+} = require('../extensions/index.js');
 
 /**
  * Implement class VigenereCipheringMachine that allows us to create
@@ -20,13 +22,40 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(direct = 1) {
+    this.direct = direct;
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+
+  encrypt(text, key) {
+    if (text === undefined || key === undefined) {
+      throw new Error('Incorrect arguments!');
+    }
+    let res = '';
+    const alpha = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
+    text = text.toUpperCase();
+    key = key.toUpperCase();
+
+    let j = 0;
+    for (let i = 0; i < text.length; i++) {
+
+      if (alpha.includes(text[i])) {
+        res = res + alpha[(alpha.indexOf(text[i]) + alpha.indexOf(key[j % key.length])) % alpha.length];
+        j++;
+      } else {
+        res = res + text[i];
+      }
+    }
+    return this.direct ? res : res.split('').reverse().join('');
+  }
+
+  decrypt(text, key) {
+    if (text === undefined || key === undefined) {
+      throw new Error('Incorrect arguments!');
+    }
+
+    const alpha = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    key = Array.from(key.toUpperCase()).map((el) => alpha[(alpha.length - alpha.indexOf(el)) % alpha.length]).join('');
+    return this.encrypt(text, key);
   }
 }
 
